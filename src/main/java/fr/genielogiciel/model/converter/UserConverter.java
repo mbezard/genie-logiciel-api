@@ -23,6 +23,7 @@ public class UserConverter {
         userDto.setMail(user.getMail());
         userDto.setName(user.getName());
         userDto.setRole(user.getRole());
+        userDto.setTags(user.getTags());
         return userDto;
     }
 

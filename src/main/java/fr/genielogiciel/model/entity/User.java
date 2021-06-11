@@ -1,5 +1,6 @@
 package fr.genielogiciel.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import fr.genielogiciel.security.Role;
 import lombok.Data;
@@ -29,6 +30,10 @@ public class User implements UserDetails {
     private String password;
 
     private Role role = Role.USER;
+
+    @JsonIgnore
+    @ManyToMany
+    private List<Tag> tags;
 
 
 
