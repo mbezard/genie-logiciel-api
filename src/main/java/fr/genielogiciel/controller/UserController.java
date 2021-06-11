@@ -1,15 +1,20 @@
 package fr.genielogiciel.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fr.genielogiciel.model.converter.UserConverter;
 import fr.genielogiciel.model.dto.UserBasicDto;
+import fr.genielogiciel.model.entity.Tag;
 import fr.genielogiciel.model.entity.User;
 import fr.genielogiciel.model.repository.UserRepository;
 import fr.genielogiciel.utils.GeneralService;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -34,16 +39,32 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/modify-profile")
-    String modifyUserMail(@RequestParam String name, @RequestParam String mail, @RequestParam String password) {
+    @PostMapping
+    private ResponseEntity<String> modifyUser(@RequestParam(required = false) String name,
+                                              @RequestParam(required = false) String mail,
+                                              @RequestParam(required = false) String password,
+                                              @RequestParam(required = false) String tagsAsString
+    ) throws JSONException, JsonProcessingException {
         User user = generalService.getUserFromContext();
-        user.setName(name);
-        user.setMail(mail);
-        if (!password.equals("undefined") && password.length() > 1){
-            user.setPassword(passwordEncoder.encode(password));
+        List<Tag> tags = null;
+        if (tagsAsString != null && tagsAsString.length() > 0) {
+            tags = generalService.getObjectListFromJsonString(tagsAsString, Tag.class);
         }
+
+        if (mail != null && mail.length() > 0) {
+            if (!user.getMail().equals(mail) && userRepository.findByMail(mail).isPresent()) {
+                return new ResponseEntity<>("Mail already used", HttpStatus.BAD_REQUEST);
+            } else {
+                user.setMail(mail);
+            }
+        }
+        if (name != null && name.length() > 0) user.setName(name);
+        if (password != null && password.length() > 0) user.setPassword(passwordEncoder.encode(password));
+        if (tags != null) user.setTags(tags);
+
         userRepository.save(user);
-        return "Changed";
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/signin")
@@ -52,7 +73,8 @@ public class UserController {
             @RequestParam String password,
             @RequestParam String mail
     ) {
-        if(userRepository.findByMail(mail).isPresent()) return new ResponseEntity<>("A user with this mail already exists.", HttpStatus.CONFLICT);
+        if (userRepository.findByMail(mail).isPresent())
+            return new ResponseEntity<>("A user with this mail already exists.", HttpStatus.CONFLICT);
 
         User user = new User();
         user.setMail(mail);
