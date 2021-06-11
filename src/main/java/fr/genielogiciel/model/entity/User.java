@@ -35,6 +35,10 @@ public class User implements UserDetails {
     @ManyToMany
     private List<Tag> tags;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "author")
+    private List<Place> placesCreated;
+
 
 
     //UserDetails methods
