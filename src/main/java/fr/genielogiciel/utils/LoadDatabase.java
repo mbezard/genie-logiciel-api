@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Configuration
@@ -47,8 +48,15 @@ class LoadDatabase {
                 tags.add(new Tag(title));
             }
 
-            for(int i=0; i < Math.random()*15+5; i++) {
-                places.add(new Place("Fake place n°"+i, tags.subList((int) (Math.random() * 5), (int) (Math.random() * 5) +5)));
+            for(int i=0; i < (Math.random()*30+20); i++) {
+                places.add(
+                        new Place(
+                                "Fake place n°"+i,
+                                tags.stream().filter((tag) -> (Math.random() > 0.7)).collect(Collectors.toList()),
+                                48.85 + Math.random() - 0.5,
+                                2.35 + Math.random() - 0.5
+                        )
+                );
             }
         }
 

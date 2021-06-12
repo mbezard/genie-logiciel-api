@@ -51,6 +51,7 @@ public class PlaceController {
             }
         }
 
+        placesAndScores.sort((o1, o2) -> -o1.getValue().compareTo(o2.getValue()));
         System.out.println(placesAndScores);
 
         return placeConverter.toPlaceWithScoreDto(placesAndScores);

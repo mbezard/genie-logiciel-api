@@ -17,6 +17,8 @@ public class PlaceConverter {
         placeWithScoreDto.setTags(place.getTags());
         placeWithScoreDto.setAddress(place.getAddress());
         placeWithScoreDto.setTitle(place.getTitle());
+        placeWithScoreDto.setLatitude(place.getLatitude());
+        placeWithScoreDto.setLongitude(place.getLongitude());
 
         placeWithScoreDto.setScore(score);
 
