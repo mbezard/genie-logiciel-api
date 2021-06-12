@@ -15,6 +15,9 @@ public class PlaceWithScoreDto {
         private String title;
         private String address;
 
+        private double latitude;
+        private double longitude;
+
         private Integer score;
 
 }
