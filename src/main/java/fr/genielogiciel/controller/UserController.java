@@ -5,6 +5,7 @@ import fr.genielogiciel.model.converter.UserConverter;
 import fr.genielogiciel.model.dto.UserBasicDto;
 import fr.genielogiciel.model.entity.Tag;
 import fr.genielogiciel.model.entity.User;
+import fr.genielogiciel.model.repository.TagRepository;
 import fr.genielogiciel.model.repository.UserRepository;
 import fr.genielogiciel.utils.GeneralService;
 import org.json.JSONException;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -21,13 +23,15 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
     private final GeneralService generalService;
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserRepository userRepository, GeneralService generalService, UserConverter userConverter, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository userRepository, TagRepository tagRepository, GeneralService generalService, UserConverter userConverter, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
         this.generalService = generalService;
         this.userConverter = userConverter;
         this.passwordEncoder = passwordEncoder;
@@ -84,6 +88,28 @@ public class UserController {
         userRepository.save(user);
 
         return new ResponseEntity<>("User added", HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/add-tag/{tagId}")
+    private ResponseEntity<String> addTag(@PathVariable Integer tagId) {
+        User user = generalService.getUserFromContext();
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new EntityNotFoundException("No tag with this id"));
+
+        if(!user.getTags().contains(tag)) user.getTags().add(tag);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/remove-tag/{tagId}")
+    private ResponseEntity<String> removeTag(@PathVariable Integer tagId) {
+        User user = generalService.getUserFromContext();
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() -> new EntityNotFoundException("No tag with this id"));
+
+        user.getTags().remove(tag);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
