@@ -23,9 +23,15 @@ public class Place {
     private String title;
     private String address;
 
-    public Place(String title, List<Tag> tags) {
+    private double latitude;
+    private double longitude;
+
+    public Place(String title, List<Tag> tags, double latitude, double longitude) {
         this.title = title;
         this.tags = tags;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
+
 
 }
