@@ -1,7 +1,9 @@
 package fr.genielogiciel.utils;
 
+import fr.genielogiciel.model.entity.Place;
 import fr.genielogiciel.model.entity.Tag;
 import fr.genielogiciel.model.entity.User;
+import fr.genielogiciel.model.repository.PlaceRepository;
 import fr.genielogiciel.model.repository.TagRepository;
 import fr.genielogiciel.model.repository.UserRepository;
 import fr.genielogiciel.security.Role;
@@ -22,7 +24,7 @@ class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
     @Bean
-    CommandLineRunner initDatabase(UserRepository repository, TagRepository tagRepository, PasswordEncoder encoder) {
+    CommandLineRunner initDatabase(UserRepository repository, TagRepository tagRepository, PlaceRepository placeRepository, PasswordEncoder encoder) {
         User basic = new User();
         basic.setName("Basic User");
         basic.setMail("user@user.com");
@@ -36,11 +38,17 @@ class LoadDatabase {
 
 
         List<Tag> tags = new ArrayList<>();
-        List<String> tagTitles = List.of("StreetArt", "Musées", "Expositions temporaires", "Statues", "Art Contemporain", "Art modernes");
-
+        List<String> tagTitles = List.of(
+                "StreetArt", "Musées", "Expositions temporaires", "Statues", "Art Contemporain",
+                "Art moderne", "Ruines", "Fresques murales", "Pixel Art");
+        List<Place> places = new ArrayList<>();
         if (!tagRepository.findAll().iterator().hasNext()) {
             for (String title : tagTitles) {
                 tags.add(new Tag(title));
+            }
+
+            for(int i=0; i < Math.random()*15+5; i++) {
+                places.add(new Place("Fake place n°"+i, tags.subList((int) (Math.random() * 5), (int) (Math.random() * 5) +5)));
             }
         }
 
@@ -50,6 +58,7 @@ class LoadDatabase {
             if (repository.findByMail("admin@admin.com").isEmpty())
                 log.info("Preloading admin user " + repository.save(admin));
             log.info("Preloading tags " + tagRepository.saveAll(tags));
+            log.info("Preloading places " + placeRepository.saveAll(places));
         };
     }
 }
