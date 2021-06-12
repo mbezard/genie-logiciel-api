@@ -1,6 +1,8 @@
 package fr.genielogiciel.utils;
 
+import fr.genielogiciel.model.entity.Tag;
 import fr.genielogiciel.model.entity.User;
+import fr.genielogiciel.model.repository.TagRepository;
 import fr.genielogiciel.model.repository.UserRepository;
 import fr.genielogiciel.security.Role;
 import org.slf4j.Logger;
@@ -20,7 +22,7 @@ class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
     @Bean
-    CommandLineRunner initDatabase(UserRepository repository, PasswordEncoder encoder) {
+    CommandLineRunner initDatabase(UserRepository repository, TagRepository tagRepository, PasswordEncoder encoder) {
         User basic = new User();
         basic.setName("Basic User");
         basic.setMail("user@user.com");
@@ -33,13 +35,21 @@ class LoadDatabase {
         admin.setPassword(encoder.encode("matthieu"));
 
 
+        List<Tag> tags = new ArrayList<>();
+        List<String> tagTitles = List.of("StreetArt", "Musées", "Expositions temporaires", "Statues", "Art Contemporain", "Art modernes");
+
+        if (!tagRepository.findAll().iterator().hasNext()) {
+            for (String title : tagTitles) {
+                tags.add(new Tag(title));
+            }
+        }
 
         return args -> {
             if (repository.findByMail("user@user.com").isEmpty())
                 log.info("Preloading basic user " + repository.save(basic));
             if (repository.findByMail("admin@admin.com").isEmpty())
                 log.info("Preloading admin user " + repository.save(admin));
-
+            log.info("Preloading tags " + tagRepository.saveAll(tags));
         };
     }
 }
