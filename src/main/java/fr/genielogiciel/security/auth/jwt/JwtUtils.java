@@ -2,8 +2,10 @@ package fr.genielogiciel.security.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -19,6 +21,14 @@ public class JwtUtils {
     }
 
 
+    public static String generateToken(String subject) {
+        return Jwts.builder()
+                .setSubject(subject)
+                .signWith(Keys.hmacShaKeyFor(JwtUtils.secretKey.getBytes(StandardCharsets.UTF_8)))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + (1000 * 60 * 60 * 24 * 7 * 2)))//2 weeks
+                .compact();
+    }
 
     //trouvé en ligne
 

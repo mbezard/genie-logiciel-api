@@ -7,6 +7,7 @@ import fr.genielogiciel.model.entity.Tag;
 import fr.genielogiciel.model.entity.User;
 import fr.genielogiciel.model.repository.TagRepository;
 import fr.genielogiciel.model.repository.UserRepository;
+import fr.genielogiciel.security.auth.jwt.JwtUtils;
 import fr.genielogiciel.utils.GeneralService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,16 +56,18 @@ public class UserController {
             tags = generalService.getObjectListFromJsonString(tagsAsString, Tag.class);
         }
 
+        if (name != null && name.length() > 0) user.setName(name);
+        if (password != null && password.length() > 0) user.setPassword(passwordEncoder.encode(password));
+        if (tags != null) user.setTags(tags);
         if (mail != null && mail.length() > 0) {
             if (!user.getMail().equals(mail) && userRepository.findByMail(mail).isPresent()) {
                 return new ResponseEntity<>("Mail already used", HttpStatus.BAD_REQUEST);
             } else {
                 user.setMail(mail);
+                userRepository.save(user);
+                return new ResponseEntity<>("Bearer "+JwtUtils.generateToken(mail), HttpStatus.OK);
             }
         }
-        if (name != null && name.length() > 0) user.setName(name);
-        if (password != null && password.length() > 0) user.setPassword(passwordEncoder.encode(password));
-        if (tags != null) user.setTags(tags);
 
         userRepository.save(user);
 
