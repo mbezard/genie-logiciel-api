@@ -24,7 +24,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
 
             final String requestTokenHeader = request.getHeader(JwtUtils.headerAuthorization);
-            System.out.println("Auth : " + requestTokenHeader);
+//            System.out.println("Auth : " + requestTokenHeader);
 
             if(request.getHeader(JwtUtils.headerAuthorization) != null && requestTokenHeader.startsWith(JwtUtils.headerAuthorizationPrefix)) {
                 String requestJwt = requestTokenHeader.substring(7);
@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 Claims body = build.parseClaimsJws(requestJwt).getBody();
 
                 String username = body.getSubject();
-                System.out.println("Connected as " + username);
+//                System.out.println("Connected as " + username);
 
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));

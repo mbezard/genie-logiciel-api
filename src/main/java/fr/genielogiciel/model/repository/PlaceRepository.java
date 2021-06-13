@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface PlaceRepository extends CrudRepository<Place, Integer> {
-    List<Place> findAllByTagsContaining(Tag tag);
     List<Place> findDistinctByTagsIn(List<Tag> tags);
 }

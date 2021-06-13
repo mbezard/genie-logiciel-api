@@ -40,7 +40,7 @@ public class PlaceController {
         List<Tag> tags = generalService.getObjectListFromJsonString(tagsAsString, Tag.class);
 
         List<Place> possiblePlaces = placeRepository.findDistinctByTagsIn(tags);
-        System.out.println("number of possible : " + possiblePlaces.size());
+//        System.out.println("number of possible : " + possiblePlaces.size());
 
         List<Map.Entry<Place, Integer>> placesAndScores = new ArrayList<>();
 
@@ -65,18 +65,18 @@ public class PlaceController {
                 distance = Math.pow(distance, 1.5) * 10; //make distance more important (optional)
                 double multiplier = Math.max(distance * ((0.1 - 10) / (0.1 - 0)) + 10, 0.1);
 
-                System.out.println("id : " + placesAndScore.getKey().getTitle() +
-                        " distance : " + distance +
-                        " multiplier : " + multiplier +
-                        " score : " + (int) (placesAndScore.getValue() * multiplier));
+//                System.out.println("id : " + placesAndScore.getKey().getTitle() +
+//                        " distance : " + distance +
+//                        " multiplier : " + multiplier +
+//                        " score : " + (int) (placesAndScore.getValue() * multiplier));
 
                 placesAndScore.setValue((int) (placesAndScore.getValue() * multiplier));
             }
         }
 
         placesAndScores.sort((o1, o2) -> -o1.getValue().compareTo(o2.getValue()));
-        System.out.println(placesAndScores);
-        System.out.println("number of final : " + placesAndScores.size());
+//        System.out.println(placesAndScores);
+//        System.out.println("number of final : " + placesAndScores.size());
         return placeConverter.toPlaceWithScoreDto(placesAndScores);
     }
 }
