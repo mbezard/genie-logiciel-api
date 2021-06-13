@@ -55,8 +55,8 @@ class LoadDatabase {
                                 "Fake address",
                                 tags.stream().filter((tag) -> (Math.random() > 0.7)).collect(Collectors.toList()),
                                 "Fake description",
-                                48.85 + Math.random() - 0.5,
-                                2.35 + Math.random() - 0.5,
+                                48.85 + (Math.pow(Math.random(), 2) - 0.3) * 0.1,
+                                2.35 + (Math.pow(Math.random(), 2) - 0.3) * 0.2,
                                 basic
                         )
                 );
