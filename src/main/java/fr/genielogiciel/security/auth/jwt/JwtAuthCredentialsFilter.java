@@ -23,7 +23,7 @@ public class JwtAuthCredentialsFilter extends UsernamePasswordAuthenticationFilt
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-
+        System.out.println("attempt Authentification");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
