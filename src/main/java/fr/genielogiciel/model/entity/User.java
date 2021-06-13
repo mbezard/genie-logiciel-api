@@ -39,7 +39,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author")
     private List<Place> placesCreated;
 
-
+    @JsonIgnore
+    @ManyToMany
+    private List<Place> placesVisited;
 
     //UserDetails methods
     @Override
