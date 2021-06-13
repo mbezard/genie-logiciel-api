@@ -52,9 +52,12 @@ class LoadDatabase {
                 places.add(
                         new Place(
                                 "Fake place n°"+i,
+                                "Fake address",
                                 tags.stream().filter((tag) -> (Math.random() > 0.7)).collect(Collectors.toList()),
+                                "Fake description",
                                 48.85 + Math.random() - 0.5,
-                                2.35 + Math.random() - 0.5
+                                2.35 + Math.random() - 0.5,
+                                basic
                         )
                 );
             }
