@@ -1,7 +1,5 @@
 package fr.genielogiciel.security.auth.jwt;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.SneakyThrows;
 import org.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,8 +11,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 public class JwtAuthCredentialsFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -39,12 +35,7 @@ public class JwtAuthCredentialsFilter extends UsernamePasswordAuthenticationFilt
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) {
-        String token = Jwts.builder()
-                .setSubject(authResult.getName())
-                .signWith(Keys.hmacShaKeyFor(JwtUtils.secretKey.getBytes(StandardCharsets.UTF_8)))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + (1000 * 60 * 60 * 24 * 2)))//2 days
-                .compact();
+        String token = JwtUtils.generateToken(authResult.getName());
 
         response.addHeader(JwtUtils.headerAuthorization, JwtUtils.headerAuthorizationPrefix + token);
         response.setContentType("application/json");

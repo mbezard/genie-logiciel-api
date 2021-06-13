@@ -48,13 +48,13 @@ class LoadDatabase {
                 tags.add(new Tag(title));
             }
 
-            for(int i=0; i < (Math.random()*30+20); i++) {
+            for (int i = 0; i < (Math.random() * 30 + 50); i++) {
                 places.add(
                         new Place(
-                                "Fake place n°"+i,
+                                "Fake place n°" + i,
                                 tags.stream().filter((tag) -> (Math.random() > 0.7)).collect(Collectors.toList()),
-                                48.85 + Math.random() - 0.5,
-                                2.35 + Math.random() - 0.5
+                                48.85 + (Math.pow(Math.random(), 2) - 0.3) * 0.1,
+                                2.35 + (Math.pow(Math.random(), 2) - 0.3) * 0.2
                         )
                 );
             }
