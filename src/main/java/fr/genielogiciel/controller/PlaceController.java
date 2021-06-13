@@ -98,12 +98,14 @@ public class PlaceController {
             @RequestParam String description,
             @RequestParam double latitude,
             @RequestParam double longitude,
+            @RequestParam(required = false) String imageUrl,
             @RequestParam String authorMail
     ) throws JSONException, JsonProcessingException {
         List<Tag> tags = generalService.getObjectListFromJsonString(tagsAsString, Tag.class);
         User author = userRepository.findByMail(authorMail).orElseThrow(() -> new EntityNotFoundException("No user with this id"));
 
-        Place place = new Place(name, address, tags, description, latitude, longitude, author );
+        Place place = new Place(name, address, tags, description, latitude, longitude, author);
+        if(imageUrl != null) place.setUrl(imageUrl);
         placeRepository.save(place);
 
         return new ResponseEntity<>("Place added", HttpStatus.OK);

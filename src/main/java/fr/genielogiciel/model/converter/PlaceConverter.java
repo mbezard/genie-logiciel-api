@@ -20,6 +20,8 @@ public class PlaceConverter {
         placeWithScoreDto.setTitle(place.getTitle());
         placeWithScoreDto.setLatitude(place.getLatitude());
         placeWithScoreDto.setLongitude(place.getLongitude());
+        placeWithScoreDto.setDescription(place.getDescription());
+        placeWithScoreDto.setUrl(place.getUrl());
 
         placeWithScoreDto.setScore(score);
 
@@ -40,6 +42,9 @@ public class PlaceConverter {
         placeDto.setTitle(place.getTitle());
         placeDto.setLatitude(place.getLatitude());
         placeDto.setLongitude(place.getLongitude());
+
+        placeDto.setDescription(place.getDescription());
+        placeDto.setUrl(place.getUrl());
 
         return placeDto;
     }

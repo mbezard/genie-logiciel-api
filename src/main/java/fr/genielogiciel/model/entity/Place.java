@@ -24,6 +24,7 @@ public class Place {
     private String address;
 
     private String description;
+    private String url = "https://i.postimg.cc/k5QvhtG4/image-wander-online.png";
 
     private double latitude;
     private double longitude;
