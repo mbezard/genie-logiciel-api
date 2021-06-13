@@ -1,10 +1,15 @@
 package fr.genielogiciel.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import fr.genielogiciel.model.converter.PlaceConverter;
 import fr.genielogiciel.model.converter.UserConverter;
+import fr.genielogiciel.model.dto.PlaceDto;
+import fr.genielogiciel.model.dto.PlaceWithScoreDto;
 import fr.genielogiciel.model.dto.UserBasicDto;
+import fr.genielogiciel.model.entity.Place;
 import fr.genielogiciel.model.entity.Tag;
 import fr.genielogiciel.model.entity.User;
+import fr.genielogiciel.model.repository.PlaceRepository;
 import fr.genielogiciel.model.repository.TagRepository;
 import fr.genielogiciel.model.repository.UserRepository;
 import fr.genielogiciel.utils.GeneralService;
@@ -26,15 +31,21 @@ public class UserController {
     private final TagRepository tagRepository;
     private final GeneralService generalService;
     private final UserConverter userConverter;
+    private final PlaceConverter placeConverter;
     private final PasswordEncoder passwordEncoder;
+    private final PlaceRepository placeRepository;
+
 
     @Autowired
-    public UserController(UserRepository userRepository, TagRepository tagRepository, GeneralService generalService, UserConverter userConverter, PasswordEncoder passwordEncoder) {
+    public UserController(UserRepository userRepository, TagRepository tagRepository, PlaceRepository placeRepository, GeneralService generalService, UserConverter userConverter, PlaceConverter placeConverter, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
+        this.placeRepository = placeRepository;
         this.generalService = generalService;
         this.userConverter = userConverter;
+        this.placeConverter = placeConverter;
         this.passwordEncoder = passwordEncoder;
+
     }
 
     @GetMapping("/get-user-info")
@@ -112,4 +123,25 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping(path = "/add-visited-place/{placeId}")
+    private ResponseEntity<String> addVisitedPlace(@PathVariable Integer placeId) {
+        User user = generalService.getUserFromContext();
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new EntityNotFoundException("No place with this id"));
+
+        if (user.getPlacesVisited().contains(place)) {
+            user.getPlacesVisited().remove(place);
+        }
+        user.getPlacesVisited().add(0,place); //inserted in the first position to order the whole in chronological order
+
+        userRepository.save(user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/get-visited-places")
+    private List<PlaceDto> getVisitedPlaces (){
+        User user = generalService.getUserFromContext();
+        List<Place> visitedPlaces = user.getPlacesVisited();
+        return placeConverter.toPlaceDto(visitedPlaces);
+    }
 }
