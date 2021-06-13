@@ -13,7 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>genie-logiciel-api</name>
     <description>Demo project for Spring Boot</description>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
