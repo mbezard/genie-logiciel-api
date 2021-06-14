@@ -17,4 +17,7 @@ public class PlaceDto {
 
     private double latitude;
     private double longitude;
+
+    private String description;
+    private String url;
 }

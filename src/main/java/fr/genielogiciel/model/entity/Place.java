@@ -23,14 +23,20 @@ public class Place {
     private String title;
     private String address;
 
+    private String description;
+    private String url = "https://i.postimg.cc/k5QvhtG4/image-wander-online.png";
+
     private double latitude;
     private double longitude;
 
-    public Place(String title, List<Tag> tags, double latitude, double longitude) {
+    public Place(String title, String address, List<Tag> tags,String description, double latitude, double longitude, User author) {
         this.title = title;
         this.tags = tags;
+        this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.description = description;
+        this.author = author;
     }
 
 
